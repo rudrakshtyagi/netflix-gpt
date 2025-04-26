@@ -1,10 +1,28 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
 
 const Login = () => {
 
   const[isSignIn,setIsSignIn]=useState(true);
+const [errorMessage,setErrorMessage]=useState(null);
 
+
+  const email=useRef();
+  const password=useRef();
+  
+  // function for Sign In Sign Up button
+ const handleSignButton=()=>{
+console.log(email.current.value);
+console.log(password.current.value);
+
+const message=checkValidData(email.current.value,password.current.value);
+console.log(message);
+setErrorMessage(message)
+
+
+}
+// funtion for New to Netflix?
   const handleSignIn=()=>{
     setIsSignIn(!isSignIn);
 
@@ -26,7 +44,7 @@ const Login = () => {
 
       {/* Login form */}
       <div className="relative flex justify-center items-center h-screen w-screen px-4">
-  <form className="flex flex-col gap-4 bg-black bg-opacity-70 p-4 md:p-6 rounded-lg max-w-xs sm:max-w-sm w-full">
+  <form onSubmit={(e)=>{e.preventDefault()}}  className="flex flex-col gap-4 bg-black bg-opacity-70 p-4 md:p-6 rounded-lg max-w-xs sm:max-w-sm w-full">
 
   <h2 className="text-2xl font-medium  text-white mb-2">
   {isSignIn ? "Sign In":"Sign Up"}
@@ -39,25 +57,31 @@ const Login = () => {
     />}
 {/* input field for Email */}
     <input
-      type="text"
-
+    
+    type="text"
+    ref={email}
       placeholder="Email Address"
       className="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm sm:text-base"
     />
     {/* imput field for Password */}
     <input
       type="password"
+      ref={password}
       placeholder="Password"
       className="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm sm:text-base"
     />
     
-    
+    <p className="text-red-500 text-xs">{errorMessage}</p>
+
+    {/* SignIn SignUp button */}
     <button
-      className="w-full bg-red-600 hover:bg-red-900 text-white font-bold py-3 rounded-md transition duration-300 text-sm sm:text-base mt-8"
-    >
-      {isSignIn ? "Sign In":"Sign Up"}
-    </button>
-    <label className=" flex text-white text-xs font-light opacity-50"for="rememberMe">
+  type="button" // IMPORTANT!
+  className="w-full bg-red-600 hover:bg-red-900 text-white font-bold py-3 rounded-md transition duration-300 text-sm sm:text-base mt-8"
+  onClick={handleSignButton}>
+  {isSignIn ? "Sign In" : "Sign Up"}
+</button>
+
+    <label className=" flex text-white text-xs font-light opacity-50" htmlFor="rememberMe">
   <input type="checkbox" id="rememberMe" name="rememberMe"/>
   Remember Me
 </label>

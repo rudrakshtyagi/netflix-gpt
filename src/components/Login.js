@@ -1,6 +1,9 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
+import { createUserWithEmailAndPassword ,signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
+
 
 const Login = () => {
 
@@ -18,10 +21,43 @@ console.log(password.current.value);
 
 const message=checkValidData(email.current.value,password.current.value);
 console.log(message);
-setErrorMessage(message)
+setErrorMessage(message);
 
+// is data didnt get validate. return from here.
+if(message) return;  
+
+// created new user add logic  and existing user login logic
+
+if(!isSignIn){
+  createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+  .then((userCredential) => {
+    // Successfully created user
+    const user = userCredential.user;
+    console.log("User created:", user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    setErrorMessage(errorCode + errorMessage);
+  });
+
+} else{
+  signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+  .then((userCredential) => {
+    const user = userCredential.user;
+    console.log("User Signed In Successfully:", user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.error("Error signing in:", errorCode, errorMessage);
+    setErrorMessage(errorCode + errorMessage);
+    
+  });
 
 }
+
+};
 // funtion for New to Netflix?
   const handleSignIn=()=>{
     setIsSignIn(!isSignIn);
